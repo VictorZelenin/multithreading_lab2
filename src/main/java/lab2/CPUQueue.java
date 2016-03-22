@@ -1,5 +1,7 @@
 package lab2;
 
+import lab2.item.Process;
+
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -8,20 +10,22 @@ import java.util.Queue;
  */
 public class CPUQueue {
 
-    Queue<ProcessThread> processQueue;
+    private Queue<Process> processQueue;
 
     public CPUQueue() {
         processQueue = new LinkedList<>();
     }
 
 
-    public synchronized void add(ProcessThread process) {
+    public synchronized void add(Process process) {
 
-        processQueue.add(process);
+        System.out.println(process + " was added to queue");
+
+        processQueue.offer(process);
 
     }
 
-    public synchronized ProcessThread get() {
+    public synchronized Process get() {
 
         return processQueue.poll();
     }
@@ -32,5 +36,9 @@ public class CPUQueue {
 
     }
 
+    @Override
+    public String toString() {
+        return String.valueOf(processQueue);
+    }
 
 }
