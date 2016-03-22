@@ -1,6 +1,6 @@
 package lab2.consumer;
 
-import lab2.CPUQueue;
+import lab2.data_store.CPUQueue;
 import lab2.item.Process;
 
 /**
@@ -16,11 +16,14 @@ public class CPU extends Thread {
     private static int ID = 0;
     private int cpuID;
 
-    private CPUQueue queue;
+    private final CPUQueue queue;
 
 
-    public CPU() {
+    public CPU(CPUQueue queue) {
+
         cpuID = ++ID;
+
+        this.queue = queue;
 
     }
 
@@ -33,16 +36,24 @@ public class CPU extends Thread {
     // if CPU is working , we can not change new process
 
     /**
+     * @param process -- current process
      * @throws RuntimeException
      */
     public void loadCpuProcess(Process process) {
 
-        if (isBusy == true) {
+        if (isBusy) {
             throw new RuntimeException(this + " is working");
         }
 
-        // setup process
-        cpuProcess = process;
+        synchronized (this) {
+
+            System.out.println(this + " notified");
+            notify();
+            // setup process
+            cpuProcess = process;
+
+
+        }
 
 
     }
@@ -54,18 +65,10 @@ public class CPU extends Thread {
 //        System.out.println("i'm here");
         while (!isInterrupted()) {
 
+
             if (cpuProcess != null) {
 
-
-                isBusy = true;
-
-                System.out.println(this + " has started " + cpuProcess);
-
-                cpuProcess.executeProcess();
-
-                System.out.println(this + " has finished " + cpuProcess);
-
-                isBusy = false;
+                executeProcess(cpuProcess);
 
                 cpuProcess = null;
 
@@ -78,9 +81,42 @@ public class CPU extends Thread {
 //                }
 
 
+            } else if (queue.size() != 0) {
+
+                executeProcess(queue.get());
+
+            }
+
+            synchronized (this) {
+
+                try {
+
+                    System.out.println(this + " is waiting for");
+                    wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
             }
 
         }
+
+
+    }
+
+
+    private void executeProcess(Process process) {
+
+
+        isBusy = true;
+
+        System.out.println(this + " has started " + process);
+
+        process.executeProcess();
+
+        System.out.println(this + " has finished " + process);
+
+        isBusy = false;
 
 
     }
@@ -94,14 +130,6 @@ public class CPU extends Thread {
 
     // testing unit
     public static void main(String... args) {
-
-        CPU cpu = new CPU();
-
-        Process process = new Process(1000);
-
-        cpu.start();
-
-        cpu.loadCpuProcess(process);
 
 
     }

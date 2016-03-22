@@ -10,21 +10,25 @@ import lab2.producer.CPUProcess;
  */
 public class Main {
 
+    private static final int NUMBER_OF_PROCESSES = 10;
+    private static final long MAX_PROCESSING_TIME = 1000;
+    private static final int MAX_WAITING_TIME = 1000;
 
-    public static void main(String[] args) throws Exception {
 
-        CPUProcess processes = new CPUProcess(4, 100, 1000);
+    public static void main(String[] args)  {
 
+        CPUProcess processes = null;
+
+        try {
+            processes = new CPUProcess(NUMBER_OF_PROCESSES, MAX_PROCESSING_TIME, MAX_WAITING_TIME);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        assert processes != null;
         processes.start();
 
-//        while (true) {
-//            Process process = processes.getProcess();
-//            processes.deleteProcess();
-//            if (process != null){
-//                System.out.println(process);
-//            }
-//
-//        }
+
 
     }
 

@@ -26,7 +26,7 @@ public class Process {
     public void executeProcess() {
         try {
 //            System.out.println(this + " started");
-            Thread.currentThread().sleep(time);  // processing time
+            Thread.sleep(time);  // processing time
 //            System.out.println(this + " finished");
         } catch (InterruptedException e) {
             System.err.println("Process-" + id + " was interrupted, check your's logs");

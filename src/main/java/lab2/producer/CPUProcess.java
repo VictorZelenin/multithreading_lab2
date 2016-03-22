@@ -1,6 +1,6 @@
 package lab2.producer;
 
-import lab2.CPUQueue;
+import lab2.data_store.CPUQueue;
 import lab2.consumer.CPU;
 import lab2.item.Process;
 
@@ -14,7 +14,7 @@ public class CPUProcess extends Thread {
 
     private CPU CPU1, CPU2;
 
-    private CPUQueue queue;
+    private final CPUQueue queue;
 
 //    private Process currentProcess;
 
@@ -25,20 +25,18 @@ public class CPUProcess extends Thread {
         this.maxWaitingTime = maxWaitingTime;
         this.maxProcessingTime = maxProcessingTime;
 
-        CPU1 = new CPU();
-        CPU2 = new CPU();
+        queue = new CPUQueue();
+
+        CPU1 = new CPU(queue);
+        CPU2 = new CPU(queue);
 
         CPU1.start();
         CPU2.start();
-
-        queue = new CPUQueue();
 
 
     }
 
     private void generateProcesses(int numbersOfThreads, long maxProcessingTime, long maxWaitingTime) throws InterruptedException {
-
-
 
 
         for (int i = 0; i < numbersOfThreads; i++) {
@@ -49,17 +47,12 @@ public class CPUProcess extends Thread {
             System.out.println("Process-" + process.getId() + " has been generated");
 
 
-
-
             // work out generated process
             if (!CPU1.isBusy()) {
-                System.out.println("cpu1");
                 CPU1.loadCpuProcess(process);
             } else if (!CPU2.isBusy()) {
-                System.out.println("cpu2");
                 CPU2.loadCpuProcess(process);
             } else {
-                System.out.println("queue");
                 queue.add(process);
             }
 
@@ -67,7 +60,7 @@ public class CPUProcess extends Thread {
 //            currentProcess = thread;
 
 
-            Thread.currentThread().sleep((long) (Math.random() * maxWaitingTime));
+            sleep((long) (Math.random() * maxWaitingTime));
 
 
         }
@@ -94,8 +87,7 @@ public class CPUProcess extends Thread {
     public static void main(String[] args) throws InterruptedException {
 
 
-        CPUProcess cpuProcess = new CPUProcess(10, 5000, 1000);
-
+        CPUProcess cpuProcess = new CPUProcess(10, 100, 1000);
 
 
         cpuProcess.start();

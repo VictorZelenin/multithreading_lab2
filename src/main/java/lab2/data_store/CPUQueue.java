@@ -1,4 +1,4 @@
-package lab2;
+package lab2.data_store;
 
 import lab2.item.Process;
 
