@@ -44,14 +44,16 @@ public class CPU extends Thread {
         if (isBusy) {
             throw new RuntimeException(this + " is working");
         }
-
+    
+    
+        // setup process
+        cpuProcess = process;
+        
         synchronized (this) {
 
             System.out.println(this + " notified");
             notify();
-            // setup process
-            cpuProcess = process;
-
+        
 
         }
 
