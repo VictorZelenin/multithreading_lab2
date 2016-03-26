@@ -8,7 +8,7 @@ import lab2.item.Process;
  */
 public class CPU extends Thread {
 
-    public static final long PROCESSOR_DELAY_COEF = 5000;
+   
 
 
     private Process cpuProcess; // current process
